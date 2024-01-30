@@ -7,7 +7,7 @@ resource "aws_instance" "this" {
   instance_type = "t2.micro"
 
   tags = {
-    Name = "terraform-example"
-    Type = "tf-up-running"
+    Name    = "terraform-example"
+    Service = "tf-up-running"
   }
 }
