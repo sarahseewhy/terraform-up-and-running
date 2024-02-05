@@ -11,7 +11,7 @@ resource "aws_instance" "this" {
               #!/bin/bash
               echo "Hello World" > index.html
               nohup busybox httpd -f -p 8080 &
-  EOF
+              EOF
 
   user_data_replace_on_change = true
 
