@@ -13,8 +13,6 @@ resource "aws_launch_configuration" "this" {
               nohup busybox httpd -f -p ${var.server_port} &
               EOF
 
-  user_data_replace_on_change = true
-
   lifecycle {
     create_before_destroy = true
   }
@@ -27,7 +25,7 @@ resource "aws_autoscaling_group" "this" {
   max_size = 2
   min_size = 10
 
-  tag = {
+  tag {
     key                 = "Name"
     value               = "terraform-asg-example"
     propagate_at_launch = true
@@ -51,9 +49,13 @@ variable "server_port" {
   default     = 8080
 }
 
+data "aws_vpc" "default" {
+  default = true
+}
+
 data "aws_subnets" "default" {
   filter {
     name   = "vpc-id"
-    values = [data.aws_subnets.default.id]
+    values = [data.aws_vpc.default.id]
   }
 }
