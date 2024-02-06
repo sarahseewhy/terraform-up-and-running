@@ -2,10 +2,10 @@ provider "aws" {
   region = "eu-west-2"
 }
 
-resource "aws_instance" "this" {
-  ami                    = "ami-0ff1c68c6e837b183"
-  instance_type          = "t2.micro"
-  vpc_security_group_ids = [aws_security_group.this.id]
+resource "aws_launch_configuration" "this" {
+  image_id        = "ami-0ff1c68c6e837b183"
+  instance_type   = "t2.micro"
+  security_groups = [aws_security_group.this.id]
 
   user_data = <<-EOF
               #!/bin/bash
@@ -14,11 +14,6 @@ resource "aws_instance" "this" {
               EOF
 
   user_data_replace_on_change = true
-
-  tags = {
-    Name    = "terraform-example"
-    Service = "tf-up-running"
-  }
 }
 
 resource "aws_security_group" "this" {
@@ -36,9 +31,4 @@ variable "server_port" {
   description = "The port the server will use for HTTP requests"
   type        = number
   default     = 8080
-}
-
-output "public_ip" {
-  value       = aws_instance.this.public_ip
-  description = "The public IP of the web server"
 }
