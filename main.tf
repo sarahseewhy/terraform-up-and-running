@@ -5,7 +5,7 @@ provider "aws" {
 resource "aws_launch_configuration" "this" {
   image_id        = "ami-0ff1c68c6e837b183"
   instance_type   = "t2.micro"
-  security_groups = [aws_security_group.this.id]
+  security_groups = [aws_security_group.instance.id]
 
   user_data = <<-EOF
               #!/bin/bash
@@ -32,7 +32,7 @@ resource "aws_autoscaling_group" "this" {
   }
 }
 
-resource "aws_security_group" "this" {
+resource "aws_security_group" "instance" {
   name = "terraform-example-instance"
 
   ingress {
