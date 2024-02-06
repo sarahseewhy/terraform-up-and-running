@@ -43,6 +43,26 @@ resource "aws_security_group" "this" {
   }
 }
 
+resource "aws_lb" "this" {
+  name               = "terraform-asg-example"
+  load_balancer_type = "application"
+  subnets            = data.aws_subnets.default.ids
+}
+
+resource "aws_lb_listener" "this" {
+  load_balancer_arn = aws_lb.this.arn
+  port              = 80
+  protocol          = "http"
+
+  default_action {
+    type = "fixed-response"
+    fixed_response {
+      content_type = "text/plain"
+      message_body = "404: page not found"
+      status_code  = 404
+    }
+  }
+}
 variable "server_port" {
   description = "The port the server will use for HTTP requests"
   type        = number
