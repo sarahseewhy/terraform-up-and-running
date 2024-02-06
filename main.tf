@@ -16,6 +16,19 @@ resource "aws_launch_configuration" "this" {
   user_data_replace_on_change = true
 }
 
+resource "aws_autoscaling_group" "this" {
+  launch_configuration = aws_launch_configuration.this.name
+
+  max_size = 2
+  min_size = 10
+
+  tag = {
+    key                 = "Name"
+    value               = "terraform-asg-example"
+    propagate_at_launch = true
+  }
+}
+
 resource "aws_security_group" "this" {
   name = "terraform-example-instance"
 
