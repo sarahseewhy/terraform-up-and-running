@@ -47,6 +47,7 @@ resource "aws_lb" "this" {
   name               = "terraform-asg-example"
   load_balancer_type = "application"
   subnets            = data.aws_subnets.default.ids
+  security_groups    = [aws_security_group.alb.id]
 }
 
 resource "aws_lb_listener" "this" {
