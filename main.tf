@@ -22,6 +22,7 @@ resource "aws_launch_configuration" "this" {
 
 resource "aws_autoscaling_group" "this" {
   launch_configuration = aws_launch_configuration.this.name
+  vpc_zone_identifier  = data.aws_subnets.default.ids
 
   max_size = 2
   min_size = 10
@@ -48,4 +49,11 @@ variable "server_port" {
   description = "The port the server will use for HTTP requests"
   type        = number
   default     = 8080
+}
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_subnets.default.id]
+  }
 }
