@@ -22,6 +22,9 @@ resource "aws_autoscaling_group" "this" {
   launch_configuration = aws_launch_configuration.this.name
   vpc_zone_identifier  = data.aws_subnets.default.ids
 
+  target_group_arns = [aws_alb_target_group.asg.arn]
+  health_check_type = "ELB"
+
   max_size = 2
   min_size = 10
 
@@ -80,6 +83,23 @@ resource "aws_security_group" "alb" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_alb_target_group" "asg" {
+  name     = "terraform-asg-example"
+  port     = var.server_port
+  protocol = "HTTP"
+  vpc_id   = data.aws_vpc.default.id
+
+  health_check {
+    path                = "/"
+    protocol            = "HTTP"
+    matcher             = "200"
+    interval            = 15
+    timeout             = 3
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
   }
 }
 
