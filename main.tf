@@ -2,7 +2,7 @@ provider "aws" {
   region = "eu-west-2"
 }
 
-resource "aws_launch_configuration" "this" {
+resource "aws_launch_configuration" "example" {
   image_id        = "ami-0ff1c68c6e837b183"
   instance_type   = "t2.micro"
   security_groups = [aws_security_group.instance.id]
@@ -18,8 +18,8 @@ resource "aws_launch_configuration" "this" {
   }
 }
 
-resource "aws_autoscaling_group" "this" {
-  launch_configuration = aws_launch_configuration.this.name
+resource "aws_autoscaling_group" "asg" {
+  launch_configuration = aws_launch_configuration.example.name
   vpc_zone_identifier  = data.aws_subnets.default.ids
 
   target_group_arns = [aws_alb_target_group.asg.arn]
@@ -46,15 +46,15 @@ resource "aws_security_group" "instance" {
   }
 }
 
-resource "aws_lb" "this" {
+resource "aws_lb" "example" {
   name               = "terraform-asg-example"
   load_balancer_type = "application"
   subnets            = data.aws_subnets.default.ids
   security_groups    = [aws_security_group.alb.id]
 }
 
-resource "aws_lb_listener" "this" {
-  load_balancer_arn = aws_lb.this.arn
+resource "aws_lb_listener" "http" {
+  load_balancer_arn = aws_lb.example.arn
   port              = 80
   protocol          = "http"
 
@@ -104,7 +104,7 @@ resource "aws_alb_target_group" "asg" {
 }
 
 resource "aws_lb_listener_rule" "asg" {
-  listener_arn = aws_lb_listener.this.arn
+  listener_arn = aws_lb_listener.http.arn
   priority     = 100
 
   condition {
