@@ -56,7 +56,7 @@ resource "aws_lb" "example" {
 resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.example.arn
   port              = 80
-  protocol          = "http"
+  protocol          = "HTTP"
 
   default_action {
     type = "fixed-response"
@@ -117,7 +117,6 @@ resource "aws_lb_listener_rule" "asg" {
     type             = "forward"
     target_group_arn = aws_alb_target_group.asg.arn
   }
-
 }
 
 output "alb_dns_name" {
