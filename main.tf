@@ -130,6 +130,10 @@ variable "server_port" {
   default     = 8080
 }
 
+resource "aws_internet_gateway" "gw" {
+  vpc_id = data.aws_vpc.default.id
+}
+
 data "aws_vpc" "default" {
   default = true
 }
